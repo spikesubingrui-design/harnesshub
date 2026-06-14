@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HarnessHub — frontier harness catalog</title>
+<style>
+  :root{
+    --bg:#fbfbf9; --surface:#fff; --line:#e7e5dd; --ink:#1c1b18; --muted:#6b6a64;
+    --accent:#2f7d5b; --accent-ink:#0f5138; --warn:#9a5b00; --add:#1d7a4c; --del:#b23b3b; --chip:#f1efe8;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#16150f; --surface:#1f1e17; --line:#33312a; --ink:#ece9e0; --muted:#9b988e;
+      --accent:#5dcaa5; --accent-ink:#9fe1cb; --warn:#efb259; --add:#7fce9f; --del:#f09595; --chip:#2a2922; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  a{color:var(--accent-ink)}
+  header{padding:22px 24px 10px;max-width:1100px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;margin:0 0 2px}
+  .tag{color:var(--muted);font-size:14px;margin:0}
+  .banner{max-width:1100px;margin:10px auto 0;padding:8px 24px;color:var(--warn);font-size:13px}
+  .wrap{max-width:1100px;margin:0 auto;padding:8px 24px 60px}
+  nav{display:flex;gap:6px;margin:12px 0}
+  nav button{font:inherit;font-size:14px;padding:6px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;cursor:pointer}
+  nav button[aria-selected=true]{border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 16px}
+  input,select{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px}
+  input{flex:1;min-width:180px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .card{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .12s}
+  .card:hover{border-color:var(--accent)}
+  .card h3{margin:0 0 6px;font-size:15px;font-weight:600}
+  .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
+  .chip{font-size:12px;padding:2px 8px;border-radius:20px;background:var(--chip);color:var(--muted)}
+  .chip.lic{color:var(--accent-ink)}
+  .muted{color:var(--muted);font-size:13px}
+  dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);max-width:760px;width:92vw;padding:0}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  .dhead{padding:18px 20px 10px;border-bottom:1px solid var(--line)}
+  .dbody{padding:16px 20px;max-height:62vh;overflow:auto}
+  .prov{font-size:13px;color:var(--muted);background:var(--chip);border-radius:8px;padding:10px 12px;margin:10px 0}
+  .warnline{color:var(--warn);font-weight:500}
+  pre{white-space:pre-wrap;word-break:break-word;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--chip);border-radius:8px;padding:12px;max-height:280px;overflow:auto}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px 18px;border-top:1px solid var(--line)}
+  .btn{font:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#06281c;font-weight:500}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cmpcol h3{margin:.2em 0;font-size:14px}
+  .diffsum{margin:12px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+  .add{color:var(--add)} .del{color:var(--del)}
+  .toolpill{font-size:12px;padding:2px 8px;border-radius:6px;background:var(--chip);margin:2px 4px 2px 0;display:inline-block}
+  footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>HarnessHub</h1>
+  <p class="tag">Browse, diff and one-click apply frontier-model harnesses.</p>
+</header>
+<p class="banner">Third-party prompts extracted by the community for research/interoperability — unaffiliated with, and not endorsed by, any vendor.</p>
+
+<div class="wrap">
+  <nav>
+    <button id="tabBrowse" aria-selected="true" onclick="showTab('browse')">Browse</button>
+    <button id="tabCompare" aria-selected="false" onclick="showTab('compare')">Compare</button>
+  </nav>
+
+  <section id="browse">
+    <div class="controls">
+      <input id="q" placeholder="Search vendor / surface / model…" oninput="render()">
+      <select id="vendor" onchange="render()"><option value="">All vendors</option></select>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="compare" hidden>
+    <div class="controls">
+      <select id="cmpA" onchange="renderCompare()"></select>
+      <select id="cmpB" onchange="renderCompare()"></select>
+    </div>
+    <div id="cmpout"></div>
+  </section>
+</div>
+
+<dialog id="detail"></dialog>
+<footer id="foot"></footer>
+
+<script>
+let DATA = [];
+const $ = (s)=>document.querySelector(s);
+const esc = (s)=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function showTab(t){
+  $('#browse').hidden = t!=='browse'; $('#compare').hidden = t!=='compare';
+  $('#tabBrowse').setAttribute('aria-selected', t==='browse'); $('#tabCompare').setAttribute('aria-selected', t==='compare');
+}
+
+function lineDiff(a,b){
+  const A=String(a||'').split('\n'), B=String(b||'').split('\n');
+  const ca={},cb={}; for(const l of A)ca[l]=(ca[l]||0)+1; for(const l of B)cb[l]=(cb[l]||0)+1;
+  const added=[],removed=[];
+  for(const l in cb){let d=cb[l]-(ca[l]||0); while(d-->0) if(l.trim())added.push(l);}
+  for(const l in ca){let d=ca[l]-(cb[l]||0); while(d-->0) if(l.trim())removed.push(l);}
+  const changed=added.length+removed.length, total=A.length+B.length||1;
+  return {added,removed,sim:Math.round((1-changed/total)*100)};
+}
+
+function render(){
+  const q=$('#q').value.toLowerCase(), v=$('#vendor').value;
+  const rows = DATA.filter(h=>(!v||h.vendor===v) && (h.id+h.surface+h.model).toLowerCase().includes(q));
+  $('#count').textContent = rows.length+' of '+DATA.length;
+  $('#grid').innerHTML = rows.map((h,i)=>`
+    <div class="card" onclick="openDetail('${h.id}')">
+      <h3>${esc(h.surface)} · ${esc(h.model)}</h3>
+      <div class="muted">${esc(h.vendor)} · captured ${esc(h.captured_at)}</div>
+      <div class="row">
+        <span class="chip lic">${esc(h.license)}</span>
+        <span class="chip">${h.tools.length} tools</span>
+        <span class="chip">${(h.sysLen/1000).toFixed(1)}k chars</span>
+        ${h.also_seen_in&&h.also_seen_in.length?`<span class="chip">+${h.also_seen_in.length} src</span>`:''}
+      </div>
+    </div>`).join('') || '<p class="muted">No harnesses. Run <code>harness catalog</code> after <code>harness pull</code>.</p>';
+}
+
+function openDetail(id){
+  const h = DATA.find(x=>x.id===id); if(!h) return;
+  const cli = `harness apply ${h.id} --into ./AGENTS.md`;
+  const deeplink = `harness://apply/${encodeURIComponent(h.id)}?target=agents-md`;
+  $('#detail').innerHTML = `
+    <div class="dhead">
+      <h3 style="margin:0">${esc(h.surface)} · ${esc(h.model)}</h3>
+      <div class="muted">${esc(h.id)}</div>
+    </div>
+    <div class="dbody">
+      <div class="prov">
+        <div class="warnline">⚠ ${esc(h.capture_method)} third-party content — unaffiliated with ${esc(h.vendor)}</div>
+        source: <a href="${esc(h.source_url)}" target="_blank" rel="noopener">${esc(h.license)}</a> ·
+        captured ${esc(h.captured_at)} · confidence ${h.confidence}
+        ${h.also_seen_in&&h.also_seen_in.length?'<br>also seen in: '+h.also_seen_in.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.split('/')[4]||'src')}</a>`).join(', '):''}
+      </div>
+      ${h.tools.length?`<div><strong>Tools (${h.tools.length})</strong><div style="margin:6px 0">${h.tools.map(t=>`<span class="toolpill">${esc(t.name)}</span>`).join('')}</div></div>`:''}
+      <div><strong>System prompt</strong> <span class="muted">${(h.sysLen/1000).toFixed(1)}k chars</span></div>
+      <p class="muted">${esc(h.summary)}</p>
+      <pre>${esc(h.content.slice(0,4000))}${h.content.length>4000?'\n… (truncated — full text applied on apply)':''}</pre>
+    </div>
+    <div class="actions">
+      <a class="btn primary" href="${deeplink}">↓ Apply to my AGENTS.md</a>
+      <button class="btn" onclick="navigator.clipboard.writeText('${cli}');this.textContent='copied ✓'">Copy CLI</button>
+      <button class="btn" onclick="document.getElementById('detail').close()">Close</button>
+    </div>`;
+  $('#detail').showModal();
+}
+
+function renderCompare(){
+  const a=DATA.find(x=>x.id===$('#cmpA').value), b=DATA.find(x=>x.id===$('#cmpB').value);
+  if(!a||!b){ $('#cmpout').innerHTML=''; return; }
+  const d = lineDiff(a.content, b.content);
+  const ta=new Set(a.tools.map(t=>t.name)), tb=new Set(b.tools.map(t=>t.name));
+  const tAdd=[...tb].filter(x=>!ta.has(x)), tRem=[...ta].filter(x=>!tb.has(x));
+  $('#cmpout').innerHTML = `
+    <div class="diffsum">
+      <strong>${esc(a.model)}</strong> → <strong>${esc(b.model)}</strong> ·
+      system prompt <strong>${d.sim}% similar</strong>
+      <span class="add">+${d.added.length}</span> / <span class="del">−${d.removed.length}</span> lines
+      ${tAdd.length||tRem.length?` · tools <span class="add">+${tAdd.length}</span>/<span class="del">−${tRem.length}</span>`:''}
+    </div>
+    <div class="cmp">
+      <div class="cmpcol"><h3 class="del">− ${esc(a.id)}</h3><pre>${esc(d.removed.slice(0,60).join('\n'))||'(no removed lines)'}</pre></div>
+      <div class="cmpcol"><h3 class="add">+ ${esc(b.id)}</h3><pre>${esc(d.added.slice(0,60).join('\n'))||'(no added lines)'}</pre></div>
+    </div>`;
+}
+
+fetch('./catalog.json').then(r=>r.json()).then(j=>{
+  DATA = j.harnesses||[];
+  const vendors=[...new Set(DATA.map(h=>h.vendor))].sort();
+  $('#vendor').innerHTML='<option value="">All vendors</option>'+vendors.map(v=>`<option>${esc(v)}</option>`).join('');
+  const opts=DATA.map(h=>`<option value="${esc(h.id)}">${esc(h.vendor)} · ${esc(h.model)} (${esc(h.captured_at)})</option>`).join('');
+  $('#cmpA').innerHTML=opts; $('#cmpB').innerHTML=opts;
+  if(DATA[1]) $('#cmpB').selectedIndex=1;
+  $('#foot').textContent = `${DATA.length} harnesses · generated ${j.generated||''} · HarnessHub`;
+  render(); renderCompare();
+}).catch(e=>{ $('#grid').innerHTML='<p class="muted">Could not load catalog.json — generate it with <code>harness catalog</code>, then serve this folder.</p>'; });
+</script>
+</body>
+</html>

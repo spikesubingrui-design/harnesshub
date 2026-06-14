@@ -1,0 +1,12 @@
+# pulled upstream data — verbatim third-party content; regenerate with `harness pull`
+/harnesses/**/*.harness.json
+!/harnesses/_example.harness.json
+
+# generated catalog data — rebuild with `harness catalog`
+/web/catalog.json
+
+# apply target produced by `harness apply`
+/AGENTS.md
+CHANGELOG.md
+
+node_modules/

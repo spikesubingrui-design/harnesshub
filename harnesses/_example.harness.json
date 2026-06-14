@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "id": "anthropic-claude-code/opus-4.8/20260612",
+  "identity": {
+    "vendor": "anthropic",
+    "surface": "Claude Code",
+    "model": "opus-4.8",
+    "model_family": "claude-opus-4",
+    "display_name": "Claude Code (Opus 4.8)"
+  },
+  "provenance": {
+    "source_repo": "asgeirtj/system_prompts_leaks",
+    "source_url": "https://github.com/asgeirtj/system_prompts_leaks",
+    "upstream_license": "CC0-1.0",
+    "capture_method": "reconstructed",
+    "captured_at": "2026-06-12",
+    "ingested_at": "2026-06-14T00:00:00Z",
+    "verbatim": false,
+    "confidence": 0.0,
+    "vendor_affiliated": false,
+    "takedown_id": "thb_0001",
+    "notes": "ILLUSTRATIVE PLACEHOLDER — content fields are NOT real captured text. `harness pull` replaces these with normalized upstream content. This sample exists only to validate the schema shape."
+  },
+  "components": {
+    "system_prompt": {
+      "summary": "Coding agent persona: terminal-based, acts on authorized engineering tasks, defaults to action when context is sufficient.",
+      "content": "<placeholder: persona + role instructions go here after ingestion>",
+      "sections": [
+        { "heading": "Role", "kind": "persona", "content": "<placeholder>" },
+        { "heading": "When to act vs ask", "kind": "constraint", "content": "<placeholder>" },
+        { "heading": "Tool usage policy", "kind": "tool-policy", "content": "<placeholder>" }
+      ]
+    },
+    "tools": [
+      { "name": "Bash", "category": "shell", "description": "<placeholder: run shell commands>", "parameters": { "type": "object", "properties": { "command": { "type": "string" } }, "required": ["command"] } },
+      { "name": "Edit", "category": "filesystem", "description": "<placeholder: exact string replacement in a file>", "parameters": { "type": "object", "properties": { "file_path": { "type": "string" }, "old_string": { "type": "string" }, "new_string": { "type": "string" } }, "required": ["file_path", "old_string", "new_string"] } }
+    ],
+    "loop": {
+      "summary": "Plan-light agentic loop; batch independent tool calls; verify before claiming done.",
+      "content": "<placeholder: planning / loop directives>"
+    },
+    "guardrails": {
+      "summary": "Authorized-use framing; refuses destructive / mass-targeting requests; confirms hard-to-reverse actions.",
+      "content": "<placeholder: safety + refusal policy>"
+    },
+    "formatting": {
+      "summary": "Terminal markdown; file:line references as clickable links; concise output.",
+      "content": "<placeholder: output conventions>"
+    }
+  },
+  "tags": ["coding-agent", "cli", "anthropic", "opus-4.8"]
+}

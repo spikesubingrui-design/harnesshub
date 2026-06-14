@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnesshub.dev/schema/harness-0.1.json",
+  "title": "HarnessHub Canonical Harness",
+  "description": "Cross-model normalized representation of a frontier-model / agent harness (system prompt + tools + loop + guardrails + formatting + context), plus provenance. One schema over heterogeneous vendor dumps so harnesses are queryable, diffable, and applyable.",
+  "type": "object",
+  "required": ["schema_version", "id", "identity", "provenance", "components"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+/[a-z0-9.+-]+/[0-9]{8}$",
+      "description": "vendorSurface/model/captureDate, e.g. anthropic-claude-code/opus-4.8/20260612"
+    },
+    "identity": {
+      "type": "object",
+      "required": ["vendor", "surface", "model"],
+      "additionalProperties": false,
+      "properties": {
+        "vendor": { "type": "string", "description": "anthropic | openai | google | cursor | ..." },
+        "surface": { "type": "string", "description": "product surface the harness runs in, e.g. 'Claude Code', 'ChatGPT web', 'Cursor Agent'" },
+        "model": { "type": "string", "description": "model id/label, e.g. opus-4.8, gpt-5.5, gemini-3.0-pro" },
+        "model_family": { "type": "string" },
+        "display_name": { "type": "string" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Where this harness came from and how trustworthy it is. Required even in aggressive posture — provenance is the compliance + takedown asset.",
+      "required": ["captured_at", "capture_method", "verbatim", "confidence", "vendor_affiliated"],
+      "additionalProperties": false,
+      "properties": {
+        "source_repo": { "type": "string", "description": "e.g. asgeirtj/system_prompts_leaks" },
+        "source_url": { "type": "string", "format": "uri" },
+        "upstream_license": { "type": "string", "description": "CC0-1.0 | GPL-3.0 | none | unknown" },
+        "capture_method": { "type": "string", "enum": ["leak", "extraction", "official", "reconstructed", "crowdsourced"] },
+        "captured_at": { "type": "string", "format": "date", "description": "when the upstream captured it" },
+        "ingested_at": { "type": "string", "format": "date-time", "description": "when HarnessHub pulled it" },
+        "verbatim": { "type": "boolean", "description": "true if content fields reproduce upstream text verbatim (aggressive mode); false if abstracted/parameterized" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "vendor_affiliated": { "const": false, "description": "always false — never imply vendor endorsement" },
+        "content_hash": { "type": "string", "description": "short sha256 of system_prompt content — used for cross-source dedup" },
+        "also_seen_in": { "type": "array", "items": { "type": "string", "format": "uri" }, "description": "other upstream source_urls that produced identical content (deduped)" },
+        "takedown_id": { "type": "string", "description": "stable id for per-item takedown requests" },
+        "notes": { "type": "string" }
+      }
+    },
+    "components": {
+      "type": "object",
+      "description": "Normalized harness components. Any may be absent.",
+      "additionalProperties": false,
+      "properties": {
+        "system_prompt": { "$ref": "#/$defs/textComponent" },
+        "tools": { "type": "array", "items": { "$ref": "#/$defs/tool" } },
+        "loop": { "$ref": "#/$defs/textComponent", "description": "agentic loop / planning / orchestration directives" },
+        "guardrails": { "$ref": "#/$defs/textComponent", "description": "safety, refusal policy, allowed/disallowed behavior" },
+        "formatting": { "$ref": "#/$defs/textComponent", "description": "output/format conventions, markdown rules, citation style" },
+        "context": { "$ref": "#/$defs/textComponent", "description": "memory, env injection, context-management directives" }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "textComponent": {
+      "type": "object",
+      "required": ["content"],
+      "additionalProperties": false,
+      "properties": {
+        "content": { "type": "string", "description": "raw text of this component (verbatim in aggressive mode)" },
+        "summary": { "type": "string", "description": "machine-generated abstractive summary — safe to display even when 'content' is withheld by takedown" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["heading", "content"],
+            "additionalProperties": false,
+            "properties": {
+              "heading": { "type": "string" },
+              "content": { "type": "string" },
+              "kind": { "type": "string", "enum": ["persona", "capability", "constraint", "tool-policy", "safety", "formatting", "other"] }
+            }
+          }
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "parameters": { "type": "object", "description": "JSON Schema of tool inputs, as published in the harness" },
+        "category": { "type": "string", "enum": ["filesystem", "shell", "web", "code", "mcp", "agent", "other"] }
+      }
+    }
+  }
+}

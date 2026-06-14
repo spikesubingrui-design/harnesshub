@@ -1,0 +1,21 @@
+{
+  "name": "harnesshub",
+  "version": "0.0.1",
+  "description": "npm for frontier-model harnesses — discover, diff, and one-click apply.",
+  "type": "module",
+  "bin": {
+    "harness": "bin/harness.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "files": [
+    "bin",
+    "src",
+    "schema"
+  ],
+  "license": "MIT"
+}

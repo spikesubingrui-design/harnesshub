@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-label="HarnessHub — npm for frontier-model harnesses">
+  <rect width="900" height="300" rx="16" fill="#0d1117"/>
+  <rect x="0.5" y="0.5" width="899" height="299" rx="16" fill="none" stroke="#21262d"/>
+  <text x="48" y="86" font-family="ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="48" font-weight="700" fill="#e6edf3">Harness<tspan fill="#5dcaa5">Hub</tspan></text>
+  <text x="50" y="122" font-family="ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="19" fill="#8b949e">npm for frontier-model harnesses — discover, diff &amp; one-click apply.</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#adbac7">
+    <g>
+      <rect x="48" y="168" width="148" height="40" rx="20" fill="#161b22" stroke="#30363d"/>
+      <text x="122" y="193" text-anchor="middle">harness pull</text>
+    </g>
+    <g>
+      <rect x="208" y="168" width="150" height="40" rx="20" fill="#161b22" stroke="#30363d"/>
+      <text x="283" y="193" text-anchor="middle">harness apply</text>
+    </g>
+    <g>
+      <rect x="370" y="168" width="140" height="40" rx="20" fill="#161b22" stroke="#30363d"/>
+      <text x="440" y="193" text-anchor="middle">harness diff</text>
+    </g>
+    <g>
+      <rect x="522" y="168" width="150" height="40" rx="20" fill="#161b22" stroke="#30363d"/>
+      <text x="597" y="193" text-anchor="middle">harness watch</text>
+    </g>
+    <g>
+      <rect x="684" y="168" width="168" height="40" rx="20" fill="#161b22" stroke="#30363d"/>
+      <text x="768" y="193" text-anchor="middle">harness catalog</text>
+    </g>
+  </g>
+
+  <text x="50" y="256" font-family="ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="15" fill="#6e7681">
+    asgeirtj (CC0) + x1xhlol (GPL)
+    <tspan fill="#5dcaa5">  →  </tspan>canonical .harness.json<tspan fill="#5dcaa5">  →  </tspan>your AGENTS.md
+  </text>
+</svg>
