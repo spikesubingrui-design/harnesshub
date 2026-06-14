@@ -1,7 +1,7 @@
 {
   "name": "harnesshub",
   "version": "0.0.1",
-  "description": "npm for frontier-model harnesses — discover, diff, and one-click apply.",
+  "description": "npm for frontier-model harnesses — discover, diff, watch, and one-click apply leaked frontier system prompts + tool-loops into your own agent.",
   "type": "module",
   "bin": {
     "harness": "bin/harness.mjs"
@@ -12,10 +12,33 @@
   "scripts": {
     "test": "node --test"
   },
+  "keywords": [
+    "system-prompts",
+    "harness",
+    "harness-engineering",
+    "agents-md",
+    "llm",
+    "ai-agents",
+    "prompt-engineering",
+    "prompt-management",
+    "claude",
+    "cursor",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spikesubingrui-design/harnesshub.git"
+  },
+  "homepage": "https://github.com/spikesubingrui-design/harnesshub#readme",
+  "bugs": {
+    "url": "https://github.com/spikesubingrui-design/harnesshub/issues"
+  },
+  "author": "spikesubingrui-design",
   "files": [
     "bin",
     "src",
-    "schema"
+    "schema",
+    "web/index.html"
   ],
   "license": "MIT"
 }

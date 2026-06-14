@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/spikesubingrui-design/harnesshub/actions/workflows/test.yml"><img src="https://github.com/spikesubingrui-design/harnesshub/actions/workflows/test.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/spikesubingrui-design/harnesshub/stargazers"><img src="https://img.shields.io/github/stars/spikesubingrui-design/harnesshub?style=flat&color=5dcaa5" alt="stars"></a>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT">
   <img src="https://img.shields.io/badge/node-%E2%89%A518-blue" alt="node >= 18">
   <img src="https://img.shields.io/badge/deps-0-brightgreen" alt="zero deps">
-  <img src="https://img.shields.io/badge/tests-29%20passing-brightgreen" alt="29 tests">
   <img src="https://img.shields.io/badge/PRs-welcome-blueviolet" alt="PRs welcome">
 </p>
 
