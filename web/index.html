@@ -2,101 +2,212 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HarnessHub — frontier harness catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#fbfbf9; --surface:#fff; --line:#e7e5dd; --ink:#1c1b18; --muted:#6b6a64;
-    --accent:#2f7d5b; --accent-ink:#0f5138; --warn:#9a5b00; --add:#1d7a4c; --del:#b23b3b; --chip:#f1efe8;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{ --bg:#16150f; --surface:#1f1e17; --line:#33312a; --ink:#ece9e0; --muted:#9b988e;
-      --accent:#5dcaa5; --accent-ink:#9fe1cb; --warn:#efb259; --add:#7fce9f; --del:#f09595; --chip:#2a2922; }
+    color-scheme: light dark;
+    --paper:    light-dark(oklch(97.6% 0.009 95), oklch(17% 0.012 95));
+    --raised:   light-dark(oklch(99.4% 0.006 95), oklch(21% 0.012 95));
+    --ink:      light-dark(oklch(27% 0.014 90), oklch(92% 0.012 95));
+    --ink-2:    light-dark(oklch(46% 0.015 90), oklch(72% 0.012 95));
+    --ink-3:    light-dark(oklch(62% 0.012 90), oklch(58% 0.012 95));
+    --line:     light-dark(oklch(89% 0.012 90), oklch(30% 0.014 95));
+    --line-2:   light-dark(oklch(83% 0.014 90), oklch(38% 0.014 95));
+    --accent:   light-dark(oklch(48% 0.10 165), oklch(74% 0.10 165));
+    --accent-d: light-dark(oklch(40% 0.10 165), oklch(82% 0.09 165));
+    --wash:     light-dark(oklch(94.5% 0.03 165), oklch(26% 0.04 165));
+    --add:      light-dark(oklch(45% 0.10 150), oklch(72% 0.11 150));
+    --del:      light-dark(oklch(51% 0.13 25), oklch(74% 0.13 25));
+    --amber:    light-dark(oklch(52% 0.10 70), oklch(78% 0.10 75));
+
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+    --s1:.25rem; --s2:.5rem; --s3:.75rem; --s4:1rem; --s6:1.5rem; --s8:2rem; --s12:3rem;
+    --r: 9px;
+    --ease: cubic-bezier(0.25, 1, 0.5, 1);
+    --measure: 68ch;
   }
   *{box-sizing:border-box}
-  body{margin:0;font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
-  a{color:var(--accent-ink)}
-  header{padding:22px 24px 10px;max-width:1100px;margin:0 auto}
-  h1{font-size:22px;font-weight:600;margin:0 0 2px}
-  .tag{color:var(--muted);font-size:14px;margin:0}
-  .banner{max-width:1100px;margin:10px auto 0;padding:8px 24px;color:var(--warn);font-size:13px}
-  .wrap{max-width:1100px;margin:0 auto;padding:8px 24px 60px}
-  nav{display:flex;gap:6px;margin:12px 0}
-  nav button{font:inherit;font-size:14px;padding:6px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;cursor:pointer}
-  nav button[aria-selected=true]{border-color:var(--accent);color:var(--accent-ink);font-weight:500}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 16px}
-  input,select{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px}
-  input{flex:1;min-width:180px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-  .card{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .12s}
-  .card:hover{border-color:var(--accent)}
-  .card h3{margin:0 0 6px;font-size:15px;font-weight:600}
-  .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
-  .chip{font-size:12px;padding:2px 8px;border-radius:20px;background:var(--chip);color:var(--muted)}
-  .chip.lic{color:var(--accent-ink)}
-  .muted{color:var(--muted);font-size:13px}
-  dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);max-width:760px;width:92vw;padding:0}
-  dialog::backdrop{background:rgba(0,0,0,.45)}
-  .dhead{padding:18px 20px 10px;border-bottom:1px solid var(--line)}
-  .dbody{padding:16px 20px;max-height:62vh;overflow:auto}
-  .prov{font-size:13px;color:var(--muted);background:var(--chip);border-radius:8px;padding:10px 12px;margin:10px 0}
-  .warnline{color:var(--warn);font-weight:500}
-  pre{white-space:pre-wrap;word-break:break-word;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--chip);border-radius:8px;padding:12px;max-height:280px;overflow:auto}
-  .actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px 18px;border-top:1px solid var(--line)}
-  .btn{font:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#06281c;font-weight:500}
-  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .cmpcol h3{margin:.2em 0;font-size:14px}
-  .diffsum{margin:12px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px}
-  .add{color:var(--add)} .del{color:var(--del)}
-  .toolpill{font-size:12px;padding:2px 8px;border-radius:6px;background:var(--chip);margin:2px 4px 2px 0;display:inline-block}
-  footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:12px}
+  html{ -webkit-text-size-adjust:100% }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font:400 16px/1.65 var(--sans); font-kerning:normal;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  ::selection{ background:var(--wash) }
+  a{ color:var(--accent-d); text-underline-offset:2px; text-decoration-thickness:1px }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 clamp(1rem, 4vw, 2.5rem) }
+
+  /* masthead */
+  header{ padding: clamp(2rem,5vw,3.5rem) 0 var(--s6) }
+  .mast{ display:flex; align-items:baseline; gap:.6ch; flex-wrap:wrap }
+  h1{ font:600 clamp(2.4rem, 6vw, 3.6rem)/0.95 var(--serif); font-optical-sizing:auto; letter-spacing:-0.02em; margin:0 }
+  h1 .b{ color:var(--accent) }
+  .lede{ margin:var(--s3) 0 0; max-width:var(--measure); color:var(--ink-2); font-size:1.0625rem }
+  .lede strong{ color:var(--ink); font-weight:500 }
+  .disclaimer{ margin-top:var(--s4); font-size:.8125rem; color:var(--ink-3); display:flex; gap:.5ch; align-items:flex-start; max-width:var(--measure) }
+  .disclaimer b{ color:var(--amber); font-weight:500 }
+  hr.rule{ border:0; border-top:1px solid var(--line); margin:var(--s6) 0 0 }
+
+  /* tabs */
+  nav.tabs{ display:flex; gap:var(--s6); margin:var(--s6) 0 var(--s4); border-bottom:1px solid var(--line) }
+  .tab{ appearance:none; background:none; border:0; cursor:pointer; font:500 .9375rem/1 var(--sans);
+        color:var(--ink-3); padding:0 0 var(--s3); margin-bottom:-1px; border-bottom:2px solid transparent; transition:color .15s var(--ease) }
+  .tab:hover{ color:var(--ink) }
+  .tab[aria-selected=true]{ color:var(--ink); border-bottom-color:var(--accent) }
+
+  /* controls */
+  .controls{ display:flex; gap:var(--s6); align-items:flex-end; flex-wrap:wrap; margin-bottom:var(--s6) }
+  .field{ display:flex; flex-direction:column; gap:var(--s2) }
+  .field label{ font-size:.75rem; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-3) }
+  .field.grow{ flex:1; min-width:200px }
+  input[type=search], select{
+    font:400 1rem/1.4 var(--sans); color:var(--ink); background:transparent;
+    border:0; border-bottom:1.5px solid var(--line-2); padding:var(--s2) 0; width:100%;
+    transition:border-color .15s var(--ease);
+  }
+  input[type=search]::placeholder{ color:var(--ink-3) }
+  input[type=search]:focus, select:focus{ outline:none; border-bottom-color:var(--accent) }
+  select{ cursor:pointer; padding-right:1.5em; -webkit-appearance:none; appearance:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E") right .4em center/10px no-repeat }
+  .count{ color:var(--ink-3); font-size:.875rem; font-variant-numeric:tabular-nums; padding-bottom:var(--s2) }
+
+  /* archive list */
+  ol.list{ list-style:none; margin:0; padding:0 }
+  li.row{ border-top:1px solid var(--line) }
+  li.row:last-child{ border-bottom:1px solid var(--line) }
+  .row button{
+    appearance:none; background:none; border:0; cursor:pointer; width:100%; text-align:left;
+    display:grid; grid-template-columns:1fr auto; gap:var(--s2) var(--s6); align-items:baseline;
+    padding:var(--s4) var(--s4) var(--s4) var(--s6); position:relative; color:inherit; font:inherit;
+    transition:background .14s var(--ease);
+    opacity:0; transform:translateY(8px); animation:rise .5s var(--ease) forwards; animation-delay:calc(var(--i,0) * 28ms);
+  }
+  @keyframes rise{ to{ opacity:1; transform:none } }
+  .row button::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--accent); transform:scaleY(0); transform-origin:center; transition:transform .18s var(--ease) }
+  @media (hover:hover){ .row button:hover{ background:var(--raised) } .row button:hover::before{ transform:scaleY(1) } }
+  .row button:focus-visible{ outline-offset:-3px }
+  .name{ font:500 1.375rem/1.15 var(--serif); font-optical-sizing:auto; letter-spacing:-0.01em }
+  .sub{ grid-column:1; color:var(--ink-2); font-size:.875rem }
+  .sub .v{ color:var(--ink) }
+  .tags{ grid-row:1 / span 2; align-self:center; display:flex; gap:var(--s4); align-items:center; color:var(--ink-3); font-size:.8125rem; font-variant-numeric:tabular-nums }
+  .tags .lic{ color:var(--accent-d); font-weight:500 }
+  .tags b{ color:var(--ink-2); font-weight:500 }
+
+  /* empty / skeleton */
+  .empty{ padding:var(--s12) 0; max-width:46ch }
+  .empty h3{ font:500 1.25rem/1.2 var(--serif); margin:0 0 var(--s3) }
+  .empty p{ color:var(--ink-2); margin:0 0 var(--s3) }
+  .empty code{ font:.85em var(--mono); background:var(--wash); padding:.15em .45em; border-radius:5px; color:var(--accent-d) }
+  .skel{ border-top:1px solid var(--line); padding:var(--s6) var(--s6); display:flex; flex-direction:column; gap:var(--s3) }
+  .skel span{ display:block; height:.8rem; border-radius:4px; background:linear-gradient(90deg,var(--line) 0%,var(--raised) 50%,var(--line) 100%); background-size:200% 100%; animation:shim 1.4s linear infinite }
+  @keyframes shim{ to{ background-position:-200% 0 } }
+
+  /* detail sheet */
+  dialog#sheet{ border:0; background:var(--raised); color:var(--ink); margin:0 0 0 auto; height:100dvh; max-height:100dvh;
+    width:min(560px, 94vw); padding:0; box-shadow:-1px 0 0 var(--line); }
+  dialog#sheet::backdrop{ background:light-dark(oklch(27% 0.02 90 / .34), oklch(0% 0 0 / .5)); backdrop-filter:saturate(0.9) }
+  dialog#sheet[open]{ animation:slide .34s var(--ease) }
+  @keyframes slide{ from{ transform:translateX(24px); opacity:.4 } }
+  .sheet-in{ display:flex; flex-direction:column; height:100%; overflow:hidden }
+  .sheet-hd{ padding:var(--s6) var(--s6) var(--s4); border-bottom:1px solid var(--line) }
+  .sheet-hd .eyebrow{ font-size:.75rem; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3) }
+  .sheet-hd h2{ font:500 1.75rem/1.1 var(--serif); margin:.2rem 0 0; letter-spacing:-0.01em }
+  .sheet-bd{ padding:var(--s4) var(--s6); overflow:auto; flex:1 }
+  .prov{ font-size:.8125rem; color:var(--ink-2); line-height:1.7; border-left:2px solid var(--amber); padding:var(--s1) 0 var(--s1) var(--s4); margin:0 0 var(--s6) }
+  .prov .w{ color:var(--amber); font-weight:500; display:block; margin-bottom:.2rem }
+  .sec{ font-size:.75rem; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-3); margin:var(--s6) 0 var(--s3) }
+  .pill{ display:inline-block; font:.8125rem/1.4 var(--sans); color:var(--ink-2); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:.15em .55em; margin:0 .35em .4em 0 }
+  .summary{ color:var(--ink-2); font-size:.9375rem; margin:0 0 var(--s3) }
+  pre{ font:12px/1.55 var(--mono); white-space:pre-wrap; word-break:break-word; background:var(--paper); border:1px solid var(--line); border-radius:var(--r); padding:var(--s4); max-height:34vh; overflow:auto; margin:0 }
+  .sheet-ft{ display:flex; gap:var(--s3); padding:var(--s4) var(--s6); border-top:1px solid var(--line); flex-wrap:wrap }
+  .btn{ font:500 .9375rem/1 var(--sans); padding:.7em 1.1em; border-radius:var(--r); cursor:pointer; border:1px solid var(--line-2); background:transparent; color:var(--ink); transition:background .14s var(--ease), border-color .14s var(--ease) }
+  .btn:hover{ background:var(--paper); border-color:var(--ink-3) }
+  .btn.primary{ background:var(--accent); border-color:var(--accent); color:light-dark(oklch(99% 0.01 165), oklch(15% 0.02 165)); }
+  .btn.primary:hover{ background:var(--accent-d); border-color:var(--accent-d) }
+  .btn.ghost{ border-color:transparent; padding-left:.4em; padding-right:.4em }
+
+  /* compare */
+  .cmp-fields{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); margin-bottom:var(--s6) }
+  .simbar{ height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin:var(--s2) 0 }
+  .simbar i{ display:block; height:100%; background:var(--accent); border-radius:3px }
+  .diffhead{ font-size:1rem; margin-bottom:var(--s4); font-variant-numeric:tabular-nums }
+  .diffhead .m{ font:500 1.0625rem var(--serif) }
+  .diffhead .add{ color:var(--add); font-weight:500 } .diffhead .del{ color:var(--del); font-weight:500 }
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s4) }
+  .cols h4{ font:500 .8125rem/1 var(--sans); margin:0 0 var(--s2); color:var(--ink-3) }
+  .cols .del-h{ color:var(--del) } .cols .add-h{ color:var(--add) }
+
+  @media (max-width:680px){
+    .tags{ grid-row:auto; grid-column:1; align-self:start; flex-wrap:wrap }
+    .row button{ grid-template-columns:1fr }
+    .cmp-fields,.cols{ grid-template-columns:1fr }
+  }
+  footer{ color:var(--ink-3); font-size:.8125rem; padding:var(--s8) 0 var(--s12); border-top:1px solid var(--line); margin-top:var(--s8); font-variant-numeric:tabular-nums }
+  @media (prefers-reduced-motion: reduce){ *,*::before{ animation-duration:.001ms !important; transition-duration:.001ms !important } }
 </style>
 </head>
 <body>
-<header>
-  <h1>HarnessHub</h1>
-  <p class="tag">Browse, diff and one-click apply frontier-model harnesses.</p>
-</header>
-<p class="banner">Third-party prompts extracted by the community for research/interoperability — unaffiliated with, and not endorsed by, any vendor.</p>
-
 <div class="wrap">
-  <nav>
-    <button id="tabBrowse" aria-selected="true" onclick="showTab('browse')">Browse</button>
-    <button id="tabCompare" aria-selected="false" onclick="showTab('compare')">Compare</button>
+  <header>
+    <div class="mast"><h1>Harness<span class="b">Hub</span></h1></div>
+    <p class="lede">A working catalogue of frontier-model harnesses. <strong>Browse</strong> the leaked &amp; extracted system prompts and tool-loops, <strong>diff</strong> them across versions, and one-click <strong>apply</strong> one into your own agent.</p>
+    <p class="disclaimer"><span aria-hidden="true">▲</span> <span><b>Provenance, not copies.</b> Third-party prompts extracted by the community for research &amp; interoperability — unaffiliated with, and not endorsed by, any vendor.</span></p>
+    <hr class="rule">
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" id="tabBrowse" role="tab" aria-selected="true" aria-controls="browse" onclick="showTab('browse')">Catalogue</button>
+    <button class="tab" id="tabCompare" role="tab" aria-selected="false" aria-controls="compare" onclick="showTab('compare')">Compare</button>
   </nav>
 
-  <section id="browse">
+  <section id="browse" role="tabpanel" aria-labelledby="tabBrowse">
     <div class="controls">
-      <input id="q" placeholder="Search vendor / surface / model…" oninput="render()">
-      <select id="vendor" onchange="render()"><option value="">All vendors</option></select>
-      <span class="muted" id="count"></span>
+      <div class="field grow">
+        <label for="q">Search</label>
+        <input id="q" type="search" placeholder="vendor, surface or model…" autocomplete="off" oninput="render()">
+      </div>
+      <div class="field">
+        <label for="vendor">Vendor</label>
+        <select id="vendor" onchange="render()"><option value="">All</option></select>
+      </div>
+      <span class="count" id="count" aria-live="polite"></span>
     </div>
-    <div class="grid" id="grid"></div>
+    <ol class="list" id="grid"></ol>
   </section>
 
-  <section id="compare" hidden>
-    <div class="controls">
-      <select id="cmpA" onchange="renderCompare()"></select>
-      <select id="cmpB" onchange="renderCompare()"></select>
+  <section id="compare" role="tabpanel" aria-labelledby="tabCompare" hidden>
+    <div class="cmp-fields">
+      <div class="field"><label for="cmpA">Capture A</label><select id="cmpA" onchange="renderCompare()"></select></div>
+      <div class="field"><label for="cmpB">Capture B</label><select id="cmpB" onchange="renderCompare()"></select></div>
     </div>
     <div id="cmpout"></div>
   </section>
+
+  <footer id="foot"></footer>
 </div>
 
-<dialog id="detail"></dialog>
-<footer id="foot"></footer>
+<dialog id="sheet" aria-label="Harness detail"></dialog>
 
 <script>
 let DATA = [];
 const $ = (s)=>document.querySelector(s);
-const esc = (s)=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const esc = (s)=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const k = (n)=> n>=1000 ? (n/1000).toFixed(n>=10000?0:1)+'k' : ''+n;
 
 function showTab(t){
   $('#browse').hidden = t!=='browse'; $('#compare').hidden = t!=='compare';
   $('#tabBrowse').setAttribute('aria-selected', t==='browse'); $('#tabCompare').setAttribute('aria-selected', t==='compare');
 }
 
+// order-insensitive line diff (a viewer approximation of the CLI's LCS)
 function lineDiff(a,b){
   const A=String(a||'').split('\n'), B=String(b||'').split('\n');
   const ca={},cb={}; for(const l of A)ca[l]=(ca[l]||0)+1; for(const l of B)cb[l]=(cb[l]||0)+1;
@@ -108,50 +219,57 @@ function lineDiff(a,b){
 }
 
 function render(){
-  const q=$('#q').value.toLowerCase(), v=$('#vendor').value;
-  const rows = DATA.filter(h=>(!v||h.vendor===v) && (h.id+h.surface+h.model).toLowerCase().includes(q));
-  $('#count').textContent = rows.length+' of '+DATA.length;
+  const q=$('#q').value.trim().toLowerCase(), v=$('#vendor').value;
+  const rows = DATA.filter(h=>(!v||h.vendor===v) && (h.id+' '+h.surface+' '+h.model).toLowerCase().includes(q));
+  $('#count').textContent = rows.length===DATA.length ? `${DATA.length} harnesses` : `${rows.length} / ${DATA.length}`;
+  if(!rows.length){
+    $('#grid').innerHTML = `<div class="empty"><h3>Nothing matches “${esc(q||v)}”.</h3>
+      <p>Try a broader term, or pull more upstreams into the catalogue:</p>
+      <p><code>harness pull --source x1xhlol</code> &nbsp;then&nbsp; <code>harness catalog</code></p></div>`;
+    return;
+  }
   $('#grid').innerHTML = rows.map((h,i)=>`
-    <div class="card" onclick="openDetail('${h.id}')">
-      <h3>${esc(h.surface)} · ${esc(h.model)}</h3>
-      <div class="muted">${esc(h.vendor)} · captured ${esc(h.captured_at)}</div>
-      <div class="row">
-        <span class="chip lic">${esc(h.license)}</span>
-        <span class="chip">${h.tools.length} tools</span>
-        <span class="chip">${(h.sysLen/1000).toFixed(1)}k chars</span>
-        ${h.also_seen_in&&h.also_seen_in.length?`<span class="chip">+${h.also_seen_in.length} src</span>`:''}
-      </div>
-    </div>`).join('') || '<p class="muted">No harnesses. Run <code>harness catalog</code> after <code>harness pull</code>.</p>';
+    <li class="row"><button style="--i:${i}" onclick="openDetail('${esc(h.id)}')">
+      <span class="name">${esc(h.model)}</span>
+      <span class="sub"><span class="v">${esc(h.vendor)}</span> · ${esc(h.surface)} · captured ${esc(h.captured_at)}</span>
+      <span class="tags">
+        <span class="lic">${esc(h.license)}</span>
+        <span><b>${h.tools.length}</b> tools</span>
+        <span><b>${k(h.sysLen)}</b> chars</span>
+        ${h.also_seen_in&&h.also_seen_in.length?`<span><b>+${h.also_seen_in.length}</b> src</span>`:''}
+      </span>
+    </button></li>`).join('');
 }
 
 function openDetail(id){
   const h = DATA.find(x=>x.id===id); if(!h) return;
   const cli = `harness apply ${h.id} --into ./AGENTS.md`;
   const deeplink = `harness://apply/${encodeURIComponent(h.id)}?target=agents-md`;
-  $('#detail').innerHTML = `
-    <div class="dhead">
-      <h3 style="margin:0">${esc(h.surface)} · ${esc(h.model)}</h3>
-      <div class="muted">${esc(h.id)}</div>
+  const excerpt = h.content.slice(0,4200);
+  $('#sheet').innerHTML = `<div class="sheet-in">
+    <div class="sheet-hd">
+      <div class="eyebrow">${esc(h.vendor)} · ${esc(h.surface)}</div>
+      <h2>${esc(h.model)}</h2>
     </div>
-    <div class="dbody">
-      <div class="prov">
-        <div class="warnline">⚠ ${esc(h.capture_method)} third-party content — unaffiliated with ${esc(h.vendor)}</div>
+    <div class="sheet-bd">
+      <p class="prov"><span class="w">▲ ${esc(h.capture_method)} third-party content — unaffiliated with ${esc(h.vendor)}</span>
         source: <a href="${esc(h.source_url)}" target="_blank" rel="noopener">${esc(h.license)}</a> ·
         captured ${esc(h.captured_at)} · confidence ${h.confidence}
-        ${h.also_seen_in&&h.also_seen_in.length?'<br>also seen in: '+h.also_seen_in.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.split('/')[4]||'src')}</a>`).join(', '):''}
-      </div>
-      ${h.tools.length?`<div><strong>Tools (${h.tools.length})</strong><div style="margin:6px 0">${h.tools.map(t=>`<span class="toolpill">${esc(t.name)}</span>`).join('')}</div></div>`:''}
-      <div><strong>System prompt</strong> <span class="muted">${(h.sysLen/1000).toFixed(1)}k chars</span></div>
-      <p class="muted">${esc(h.summary)}</p>
-      <pre>${esc(h.content.slice(0,4000))}${h.content.length>4000?'\n… (truncated — full text applied on apply)':''}</pre>
+        ${h.also_seen_in&&h.also_seen_in.length?'<br>also seen in: '+h.also_seen_in.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc((u.split('/')[3]||u.split('/')[4]||'src'))}</a>`).join(', '):''}</p>
+      ${h.tools.length?`<div class="sec">Tools · ${h.tools.length}</div><div>${h.tools.map(t=>`<span class="pill">${esc(t.name)}</span>`).join('')}</div>`:''}
+      <div class="sec">System prompt · ${k(h.sysLen)} chars</div>
+      ${h.summary?`<p class="summary">${esc(h.summary)}</p>`:''}
+      <pre>${esc(excerpt)}${h.content.length>excerpt.length?'\n\n…  full text is written on apply':''}</pre>
     </div>
-    <div class="actions">
-      <a class="btn primary" href="${deeplink}">↓ Apply to my AGENTS.md</a>
-      <button class="btn" onclick="navigator.clipboard.writeText('${cli}');this.textContent='copied ✓'">Copy CLI</button>
-      <button class="btn" onclick="document.getElementById('detail').close()">Close</button>
-    </div>`;
-  $('#detail').showModal();
+    <div class="sheet-ft">
+      <a class="btn primary" href="${deeplink}">Apply to AGENTS.md</a>
+      <button class="btn" onclick="copyCli(this,'${esc(cli)}')">Copy CLI</button>
+      <button class="btn ghost" onclick="document.getElementById('sheet').close()">Close</button>
+    </div>
+  </div>`;
+  $('#sheet').showModal();
 }
+function copyCli(btn,cmd){ navigator.clipboard?.writeText(cmd); const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,1400); }
 
 function renderCompare(){
   const a=DATA.find(x=>x.id===$('#cmpA').value), b=DATA.find(x=>x.id===$('#cmpB').value);
@@ -160,28 +278,28 @@ function renderCompare(){
   const ta=new Set(a.tools.map(t=>t.name)), tb=new Set(b.tools.map(t=>t.name));
   const tAdd=[...tb].filter(x=>!ta.has(x)), tRem=[...ta].filter(x=>!tb.has(x));
   $('#cmpout').innerHTML = `
-    <div class="diffsum">
-      <strong>${esc(a.model)}</strong> → <strong>${esc(b.model)}</strong> ·
-      system prompt <strong>${d.sim}% similar</strong>
-      <span class="add">+${d.added.length}</span> / <span class="del">−${d.removed.length}</span> lines
-      ${tAdd.length||tRem.length?` · tools <span class="add">+${tAdd.length}</span>/<span class="del">−${tRem.length}</span>`:''}
+    <div class="diffhead"><span class="m">${esc(a.model)}</span> → <span class="m">${esc(b.model)}</span> &nbsp;·&nbsp;
+      system prompt <b>${d.sim}%</b> similar &nbsp; <span class="add">+${d.added.length}</span> / <span class="del">−${d.removed.length}</span> lines
+      ${(tAdd.length||tRem.length)?`&nbsp;·&nbsp; tools <span class="add">+${tAdd.length}</span> / <span class="del">−${tRem.length}</span>`:''}
+      <div class="simbar"><i style="width:${d.sim}%"></i></div>
     </div>
-    <div class="cmp">
-      <div class="cmpcol"><h3 class="del">− ${esc(a.id)}</h3><pre>${esc(d.removed.slice(0,60).join('\n'))||'(no removed lines)'}</pre></div>
-      <div class="cmpcol"><h3 class="add">+ ${esc(b.id)}</h3><pre>${esc(d.added.slice(0,60).join('\n'))||'(no added lines)'}</pre></div>
+    <div class="cols">
+      <div><h4 class="del-h">− removed in A</h4><pre>${esc(d.removed.slice(0,80).join('\n'))||'(none)'}</pre></div>
+      <div><h4 class="add-h">+ added in B</h4><pre>${esc(d.added.slice(0,80).join('\n'))||'(none)'}</pre></div>
     </div>`;
 }
+
+$('#grid').innerHTML = '<div class="skel"><span style="width:40%"></span><span style="width:62%"></span></div><div class="skel"><span style="width:35%"></span><span style="width:55%"></span></div><div class="skel"><span style="width:45%"></span><span style="width:60%"></span></div>';
 
 fetch('./catalog.json').then(r=>r.json()).then(j=>{
   DATA = j.harnesses||[];
   const vendors=[...new Set(DATA.map(h=>h.vendor))].sort();
-  $('#vendor').innerHTML='<option value="">All vendors</option>'+vendors.map(v=>`<option>${esc(v)}</option>`).join('');
-  const opts=DATA.map(h=>`<option value="${esc(h.id)}">${esc(h.vendor)} · ${esc(h.model)} (${esc(h.captured_at)})</option>`).join('');
-  $('#cmpA').innerHTML=opts; $('#cmpB').innerHTML=opts;
-  if(DATA[1]) $('#cmpB').selectedIndex=1;
-  $('#foot').textContent = `${DATA.length} harnesses · generated ${j.generated||''} · HarnessHub`;
+  $('#vendor').innerHTML='<option value="">All</option>'+vendors.map(v=>`<option>${esc(v)}</option>`).join('');
+  const opts=DATA.map(h=>`<option value="${esc(h.id)}">${esc(h.vendor)} · ${esc(h.model)} · ${esc(h.captured_at)}</option>`).join('');
+  $('#cmpA').innerHTML=opts; $('#cmpB').innerHTML=opts; if(DATA[1]) $('#cmpB').selectedIndex=1;
+  $('#foot').textContent = `${DATA.length} harnesses · generated ${(j.generated||'').slice(0,10)} · HarnessHub`;
   render(); renderCompare();
-}).catch(e=>{ $('#grid').innerHTML='<p class="muted">Could not load catalog.json — generate it with <code>harness catalog</code>, then serve this folder.</p>'; });
+}).catch(()=>{ $('#grid').innerHTML='<div class="empty"><h3>No catalogue yet.</h3><p>Generate it from your pulled harnesses, then serve this folder:</p><p><code>harness catalog</code></p></div>'; });
 </script>
 </body>
 </html>
